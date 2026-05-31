@@ -16,13 +16,19 @@ namespace PICalculator
         ITaskPresenter taskPresenter;
         public ICommand AddTaskCommand { get; set; }
         public ObservableCollection<Task> Tasks { get; set; } = new ObservableCollection<Task>();
-        public long SampleText { get; set; }
+        public string _sampleText = "0";
+        public string SampleText
+        {
+            get => _sampleText;
+            set => _sampleText = value;
+        }
 
         public MainViewModel()
         {
             taskPresenter = new TaskPresenter(this);
 
-            this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
+            //this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
+            this.AddTaskCommand = new RelayCommand(AddTask, () => true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -38,11 +44,11 @@ namespace PICalculator
 
         public void AddTask()
         {
-            this.taskPresenter.AddTask(this.SampleText);
+            this.taskPresenter.AddTask(long.Parse(this.SampleText));
         }
         public bool AddTaskCanExcute()
         {
-            return true;
+            return string.IsNullOrEmpty(SampleText);
         }
     }
 }

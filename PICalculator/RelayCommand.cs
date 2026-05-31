@@ -14,7 +14,7 @@ namespace PICalculator
         Action callback;
         Func<bool> canExcute;
 
-        public RelayCommand(Action callback, Func<bool> canExcute)
+        public RelayCommand(Action callback, Func<bool> canExcute = null)
         {
             this.callback = callback;
             this.canExcute = canExcute;
@@ -39,7 +39,7 @@ namespace PICalculator
         Action<T> callback;
         Func<bool, T> canExcute;
 
-        public RelayCommand(Action<T> callback, Func<bool, T> canExcute)
+        public RelayCommand(Action<T> callback, Func<bool, T> canExcute = null)
         {
             this.callback = callback;
             this.canExcute = canExcute;

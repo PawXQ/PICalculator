@@ -8,9 +8,18 @@ namespace PICalculator.Utility
 {
     internal class PiCalculator
     {
-        public static string Calculate(long sample)
+        static Random random = new Random(Guid.NewGuid().GetHashCode());
+        public static double Calculate(long sample)
         {
-            return "123";
+            int sum = 0;
+            for (int i = 0; i < sample; i++)
+            {
+                if (Math.Pow(random.NextDouble(), 2) + Math.Pow(random.NextDouble(), 2) < 1)
+                {
+                    sum++;
+                }
+            }
+            return 4.0 * sum / (sample);
         }
     }
 }
