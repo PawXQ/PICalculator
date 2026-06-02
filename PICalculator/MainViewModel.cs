@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using static PICalculator.Contract.TaskContract;
 
@@ -27,8 +28,8 @@ namespace PICalculator
         {
             taskPresenter = new TaskPresenter(this);
 
-            //this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
-            this.AddTaskCommand = new RelayCommand(AddTask, () => true);
+            this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
+            //this.AddTaskCommand = new RelayCommand(AddTask, () => true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -48,7 +49,15 @@ namespace PICalculator
         }
         public bool AddTaskCanExcute()
         {
-            return string.IsNullOrEmpty(SampleText);
+            foreach (var task in this.Tasks)
+            {
+                if (task.Sample.ToString() == this.SampleText)
+                {
+                    MessageBox.Show("SampleText duplicate");
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
