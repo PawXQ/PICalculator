@@ -16,7 +16,7 @@ namespace PICalculator
     {
         ITaskPresenter taskPresenter;
         public ICommand AddTaskCommand { get; set; }
-        public ObservableCollection<Task> Tasks { get; set; } = new ObservableCollection<Task>();
+        public ObservableCollection<PiTask> Tasks { get; set; } = new ObservableCollection<PiTask>();
         public string _sampleText = "0";
         public string SampleText
         {
@@ -38,9 +38,12 @@ namespace PICalculator
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void RenderTask(Task task)
+        public void RenderTask(PiTask task)
         {
-            this.Tasks.Add(task);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Tasks.Add(task);
+            });
         }
 
         public void AddTask()

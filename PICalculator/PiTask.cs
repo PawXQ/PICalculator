@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace PICalculator
 {
-    internal class Task
+    internal class PiTask
     {
         public long Sample { get; set; }
         public string Time { get; set; }
         public double Value { get; set; }
 
-        public Task(long Sample, string Time, double Value)
+        public PiTask(long Sample, string Time, double Value)
         {
             this.Sample = Sample;
             this.Time = Time;

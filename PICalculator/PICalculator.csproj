@@ -58,7 +58,7 @@
     <Compile Include="Contract\TaskContract.cs" />
     <Compile Include="Presenter\TaskPresenter.cs" />
     <Compile Include="RelayCommand.cs" />
-    <Compile Include="Task.cs" />
+    <Compile Include="PiTask.cs" />
     <Compile Include="Utility\PiCalculator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

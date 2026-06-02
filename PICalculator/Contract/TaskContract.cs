@@ -14,7 +14,7 @@ namespace PICalculator.Contract
         }
         internal interface ITaskView
         {
-            void RenderTask(Task task);
+            void RenderTask(PiTask task);
         }
     }
 }

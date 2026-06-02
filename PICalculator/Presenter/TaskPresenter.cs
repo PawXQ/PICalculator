@@ -17,16 +17,62 @@ namespace PICalculator.Presenter
         {
             this.tasksView = tasksView;
         }
+
+        //public void AddTask(long sample)
+        //{
+        //    sw.Start();
+        //    double result = PiCalculator.Calculate(sample);
+        //    sw.Stop();
+        //    double swTotal = sw.ElapsedMilliseconds;
+
+        //    PiTask task = new PiTask(sample, swTotal.ToString(), result);
+
+        //    this.tasksView.RenderTask(task);
+        //}
+
         public void AddTask(long sample)
         {
-            sw.Start();
-            double result = PiCalculator.Calculate(sample);
-            sw.Stop();
-            double swTotal = sw.ElapsedMilliseconds;
+            Task.Run(() =>
+            {
+                sw.Start();
+                double result = PiCalculator.Calculate(sample);
+                sw.Stop();
+                double swTotal = sw.ElapsedMilliseconds;
 
-            Task task = new Task(sample, swTotal.ToString(), result);
+                PiTask task = new PiTask(sample, swTotal.ToString(), result);
 
-            this.tasksView.RenderTask(task);
+                this.tasksView.RenderTask(task);
+            });
         }
+
+        //public async Task AddTask(long sample)
+        //{
+        //    await Task.Run(() =>
+        //    {
+        //        sw.Start();
+        //        double result = PiCalculator.Calculate(sample);
+        //        sw.Stop();
+        //        double swTotal = sw.ElapsedMilliseconds;
+
+        //        PiTask task = new PiTask(sample, swTotal.ToString(), result);
+
+        //        this.tasksView.RenderTask(task);
+        //    });
+        //}
+
+        //public Task AddTask(long sample)
+        //{
+        //    return Task.Run(() =>
+        //    {
+        //        sw.Start();
+        //        double result = PiCalculator.Calculate(sample);
+        //        sw.Stop();
+        //        double swTotal = sw.ElapsedMilliseconds;
+
+        //        PiTask task = new PiTask(sample, swTotal.ToString(), result);
+
+        //        this.tasksView.RenderTask(task);
+        //    });
+        //}
     }
 }
