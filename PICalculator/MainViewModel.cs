@@ -57,14 +57,15 @@ namespace PICalculator
         {
             this.taskPresenter.AddTask(long.Parse(this.SampleText));
         }
+
         public bool AddTaskCanExcute()
         {
             foreach (var task in this.Tasks)
             {
                 if (task.Sample.ToString() == this.SampleText)
                 {
-                    MessageBox.Show("SampleText duplicate");
-                    return false;
+                    MessageBox.Show($"{this.SampleText} sample duplicate");
+                    return true;
                 }
             }
             return true;

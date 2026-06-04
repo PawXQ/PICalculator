@@ -12,6 +12,9 @@ namespace PICalculator.Presenter
     internal class TaskPresenter : ITaskPresenter
     {
         ITaskView tasksView;
+
+        public Dictionary<long, bool> TasksStatus = new Dictionary<long, bool>();
+
         Stopwatch sw = new Stopwatch();
         public TaskPresenter(ITaskView tasksView)
         {
@@ -32,6 +35,8 @@ namespace PICalculator.Presenter
 
         public void AddTask(long sample)
         {
+            InitialTaskStatus(sample);
+
             PiTask task = new PiTask(sample);
 
             this.tasksView.RenderTask(task);
@@ -47,6 +52,8 @@ namespace PICalculator.Presenter
                 task.Value = result;
 
                 this.tasksView.RenderTask(task);
+
+                CompleteTaskStatus(sample);
             });
         }
 
@@ -79,5 +86,20 @@ namespace PICalculator.Presenter
         //        this.tasksView.RenderTask(task);
         //    });
         //}
+
+        private void InitialTaskStatus(long sample)
+        {
+            if (this.TasksStatus.ContainsKey(sample))
+            {
+                Console.WriteLine($"{sample} sample duplicate");
+                return;
+            }
+            this.TasksStatus[sample] = false;
+        }
+
+        private void CompleteTaskStatus(long sample)
+        {
+            this.TasksStatus[sample] = true;
+        }
     }
 }
