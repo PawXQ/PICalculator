@@ -18,5 +18,10 @@ namespace PICalculator
             this.Time = Time;
             this.Value = Value;
         }
+
+        public PiTask(long Sample)
+        {
+            this.Sample = Sample;
+        }
     }
 }

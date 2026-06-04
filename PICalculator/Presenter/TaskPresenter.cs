@@ -32,6 +32,10 @@ namespace PICalculator.Presenter
 
         public void AddTask(long sample)
         {
+            PiTask task = new PiTask(sample);
+
+            this.tasksView.RenderTask(task);
+
             Task.Run(() =>
             {
                 sw.Start();
@@ -39,7 +43,8 @@ namespace PICalculator.Presenter
                 sw.Stop();
                 double swTotal = sw.ElapsedMilliseconds;
 
-                PiTask task = new PiTask(sample, swTotal.ToString(), result);
+                task.Time = swTotal.ToString();
+                task.Value = result;
 
                 this.tasksView.RenderTask(task);
             });

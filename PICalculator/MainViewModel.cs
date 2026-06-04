@@ -29,7 +29,6 @@ namespace PICalculator
             taskPresenter = new TaskPresenter(this);
 
             this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
-            //this.AddTaskCommand = new RelayCommand(AddTask, () => true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -38,11 +37,19 @@ namespace PICalculator
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void RenderTask(PiTask task)
+        public void RenderTask(PiTask piTask)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                this.Tasks.Add(task);
+                for (int i = 0; i < Tasks.Count; i++)
+                {
+                    if (piTask.Sample == Tasks[i].Sample)
+                    {
+                        Tasks[i] = piTask;
+                        return;
+                    }
+                }
+                this.Tasks.Add(piTask);
             });
         }
 
