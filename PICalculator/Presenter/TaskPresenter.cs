@@ -1,5 +1,6 @@
 ﻿using PICalculator.Utility;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,93 +14,76 @@ namespace PICalculator.Presenter
     {
         ITaskView tasksView;
 
-        public Dictionary<long, bool> TasksStatus = new Dictionary<long, bool>();
+        public ConcurrentDictionary<long, bool> PiTasksStatus = new ConcurrentDictionary<long, bool>();
+        private ConcurrentQueue<long> PiTaskSampleQueue = new ConcurrentQueue<long>();
 
         Stopwatch sw = new Stopwatch();
         public TaskPresenter(ITaskView tasksView)
         {
             this.tasksView = tasksView;
+            RunTask();
         }
-
-        //public void AddTask(long sample)
-        //{
-        //    sw.Start();
-        //    double result = PiCalculator.Calculate(sample);
-        //    sw.Stop();
-        //    double swTotal = sw.ElapsedMilliseconds;
-
-        //    PiTask task = new PiTask(sample, swTotal.ToString(), result);
-
-        //    this.tasksView.RenderTask(task);
-        //}
 
         public void AddTask(long sample)
         {
-            InitialTaskStatus(sample);
-
-            PiTask task = new PiTask(sample);
-
-            this.tasksView.RenderTask(task);
-
             Task.Run(() =>
             {
-                sw.Start();
-                double result = PiCalculator.Calculate(sample);
-                sw.Stop();
-                double swTotal = sw.ElapsedMilliseconds;
+                bool initialStatus = InitialTaskStatus(sample);
 
-                task.Time = swTotal.ToString();
-                task.Value = result;
-
-                this.tasksView.RenderTask(task);
-
-                CompleteTaskStatus(sample);
+                if (initialStatus)
+                {
+                    this.PiTaskSampleQueue.Enqueue(sample);
+                }
             });
         }
 
-        //public async Task AddTask(long sample)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        sw.Start();
-        //        double result = PiCalculator.Calculate(sample);
-        //        sw.Stop();
-        //        double swTotal = sw.ElapsedMilliseconds;
-
-        //        PiTask task = new PiTask(sample, swTotal.ToString(), result);
-
-        //        this.tasksView.RenderTask(task);
-        //    });
-        //}
-
-        //public Task AddTask(long sample)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        sw.Start();
-        //        double result = PiCalculator.Calculate(sample);
-        //        sw.Stop();
-        //        double swTotal = sw.ElapsedMilliseconds;
-
-        //        PiTask task = new PiTask(sample, swTotal.ToString(), result);
-
-        //        this.tasksView.RenderTask(task);
-        //    });
-        //}
-
-        private void InitialTaskStatus(long sample)
+        public void RunTask()
         {
-            if (this.TasksStatus.ContainsKey(sample))
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    long PiTaskSample = 0;
+
+                    if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
+                    else { continue; }
+
+                    PiTask task = new PiTask(PiTaskSample);
+
+                    this.tasksView.RenderTask(task);
+
+                    Task.Run(() =>
+                    {
+                        sw.Start();
+                        double piResult = PiCalculator.Calculate(PiTaskSample);
+                        sw.Stop();
+                        double swTotal = sw.ElapsedMilliseconds;
+
+                        task.Time = swTotal.ToString();
+                        task.Value = piResult;
+
+                        this.tasksView.RenderTask(task);
+
+                        CompleteTaskStatus(PiTaskSample);
+                    });
+                }
+            });
+        }
+
+        private bool InitialTaskStatus(long sample)
+        {
+            if (this.PiTasksStatus.ContainsKey(sample))
             {
                 Console.WriteLine($"{sample} sample duplicate");
-                return;
+                return false;
             }
-            this.TasksStatus[sample] = false;
+            this.PiTasksStatus[sample] = false;
+            return true;
         }
 
         private void CompleteTaskStatus(long sample)
         {
-            this.TasksStatus[sample] = true;
+            this.PiTasksStatus[sample] = true;
         }
     }
 }
