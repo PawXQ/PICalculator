@@ -1,4 +1,5 @@
-﻿using PICalculator.Presenter;
+﻿using PICalculator.Models;
+using PICalculator.Presenter;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +13,12 @@ using static PICalculator.Contract.TaskContract;
 
 namespace PICalculator
 {
-    internal class MainViewModel : ITaskView, INotifyPropertyChanged
+    internal class MainViewModel : ITaskView
     {
         ITaskPresenter taskPresenter;
         public ICommand AddTaskCommand { get; set; }
-        public ObservableCollection<PiTask> Tasks { get; set; } = new ObservableCollection<PiTask>();
+        public ObservableCollection<PiTaskDTO> Tasks { get; set; } = new ObservableCollection<PiTaskDTO>();
+        public Dictionary<long, PiTaskDTO> piTasksDict = new Dictionary<long, PiTaskDTO>();
         public string _sampleText = "0";
         public string SampleText
         {
@@ -24,32 +26,36 @@ namespace PICalculator
             set => _sampleText = value;
         }
 
+        public System.Threading.Timer FetchCompletedMissionTimer;
+
         public MainViewModel()
         {
             taskPresenter = new TaskPresenter(this);
 
             this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
+
+            this.FetchCompletedMissionTimer = new System.Threading.Timer(FetchCompletedMission, null, 0, 5000);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public void RenderTask(PiTask piTask)
+        public void RenderTask(List<PiTaskDTO> tasks)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                for (int i = 0; i < Tasks.Count; i++)
+                foreach (var task in tasks)
                 {
-                    if (piTask.Sample == Tasks[i].Sample)
-                    {
-                        Tasks[i] = piTask;
-                        return;
-                    }
+                    piTasksDict[task.Sample].Sample = task.Sample;
+                    piTasksDict[task.Sample].Time = task.Time;
+                    piTasksDict[task.Sample].Value = task.Value;
                 }
-                this.Tasks.Add(piTask);
+            });
+        }
+
+        public void OnAddedRenderTask(PiTaskDTO task)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Tasks.Add(task);
+                piTasksDict[task.Sample] = task;
             });
         }
 
@@ -69,6 +75,11 @@ namespace PICalculator
                 }
             }
             return true;
+        }
+
+        public void FetchCompletedMission(object state)
+        {
+            this.taskPresenter.FetchCompleteMission();
         }
     }
 }

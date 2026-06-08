@@ -1,4 +1,5 @@
-﻿using PICalculator.Utility;
+﻿using PICalculator.Models;
+using PICalculator.Utility;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,30 +15,51 @@ namespace PICalculator.Presenter
     {
         ITaskView tasksView;
 
-        public ConcurrentDictionary<long, bool> PiTasksStatus = new ConcurrentDictionary<long, bool>();
+        private ConcurrentDictionary<long, PiTask> PiTasksStatus = new ConcurrentDictionary<long, PiTask>();
         private ConcurrentQueue<long> PiTaskSampleQueue = new ConcurrentQueue<long>();
+        private ConcurrentBag<PiTask> piTasks = new ConcurrentBag<PiTask>();
+        private ConcurrentBag<PiTaskDTO> piTaskDTOs = new ConcurrentBag<PiTaskDTO>();
 
         Stopwatch sw = new Stopwatch();
         public TaskPresenter(ITaskView tasksView)
         {
             this.tasksView = tasksView;
-            RunTask();
+            StartMission();
         }
 
         public void AddTask(long sample)
         {
             Task.Run(() =>
             {
-                bool initialStatus = InitialTaskStatus(sample);
+                bool initialStatus = InitialTask(sample);
 
                 if (initialStatus)
                 {
                     this.PiTaskSampleQueue.Enqueue(sample);
+
+                    PiTaskDTO piTaskDTO = new PiTaskDTO(sample);
+                    this.tasksView.OnAddedRenderTask(piTaskDTO);
                 }
             });
         }
 
-        public void RunTask()
+        private bool InitialTask(long sample)
+        {
+            if (this.PiTasksStatus.ContainsKey(sample))
+            {
+                Console.WriteLine($"{sample} sample duplicate");
+                return false;
+            }
+            this.PiTasksStatus[sample] = null;
+            return true;
+        }
+
+        private void CompleteTask(PiTask piTask)
+        {
+            this.PiTasksStatus[piTask.Sample] = piTask;
+        }
+
+        public void StartMission()
         {
             Task.Run(() =>
             {
@@ -48,10 +70,6 @@ namespace PICalculator.Presenter
                     if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
                     else { continue; }
 
-                    PiTask task = new PiTask(PiTaskSample);
-
-                    this.tasksView.RenderTask(task);
-
                     Task.Run(() =>
                     {
                         sw.Start();
@@ -59,31 +77,34 @@ namespace PICalculator.Presenter
                         sw.Stop();
                         double swTotal = sw.ElapsedMilliseconds;
 
-                        task.Time = swTotal.ToString();
-                        task.Value = piResult;
+                        PiTask task = new PiTask(PiTaskSample, swTotal.ToString(), piResult);
+                        piTasks.Add(task);
 
-                        this.tasksView.RenderTask(task);
-
-                        CompleteTaskStatus(PiTaskSample);
+                        CompleteTask(task);
                     });
                 }
             });
         }
 
-        private bool InitialTaskStatus(long sample)
+        private void PiTaskDTOTranslate()
         {
-            if (this.PiTasksStatus.ContainsKey(sample))
+            foreach (var task in this.piTasks)
             {
-                Console.WriteLine($"{sample} sample duplicate");
-                return false;
+                PiTaskDTO piTaskDTO = new PiTaskDTO(task);
+                this.piTaskDTOs.Add(piTaskDTO);
             }
-            this.PiTasksStatus[sample] = false;
-            return true;
         }
 
-        private void CompleteTaskStatus(long sample)
+        public void FetchCompleteMission()
         {
-            this.PiTasksStatus[sample] = true;
+            PiTaskDTOTranslate();
+            this.tasksView.RenderTask(this.piTaskDTOs.ToList());
+            this.piTasks = new ConcurrentBag<PiTask>();
+            this.piTaskDTOs = new ConcurrentBag<PiTaskDTO>();
+        }
+
+        public void StopMission()
+        {
         }
     }
 }

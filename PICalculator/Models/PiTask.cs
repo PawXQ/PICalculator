@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PICalculator
+namespace PICalculator.Models
 {
     internal class PiTask
     {

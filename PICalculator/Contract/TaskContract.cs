@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PICalculator.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,15 @@ namespace PICalculator.Contract
     {
         internal interface ITaskPresenter
         {
+            void StartMission();
             void AddTask(long sample);
+            void FetchCompleteMission();
+            void StopMission();
         }
         internal interface ITaskView
         {
-            void RenderTask(PiTask task);
+            void OnAddedRenderTask(PiTaskDTO task);
+            void RenderTask(List<PiTaskDTO> tasks);
         }
     }
 }

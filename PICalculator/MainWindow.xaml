@@ -13,7 +13,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Width="75" >Sample Size</Label>
-            <TextBox Width="80" Text="{Binding SampleText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,0,10,0"></TextBox>
+            <TextBox Width="80" Text="{Binding SampleText}" Margin="10,0,10,0"></TextBox>
             <Button 
                 Command="{Binding AddTaskCommand}" 
                 CommandParameter="{Binding}">
