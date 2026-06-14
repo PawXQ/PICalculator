@@ -1,0 +1,27 @@
+﻿<Window x:Class="PICalculatorDotNet8.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PICalculatorDotNet8"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center"  VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Width="100" HorizontalContentAlignment ="Center">PI Calculator</Label>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Width="75" >Sample Size</Label>
+            <TextBox Width="80" Text="{Binding SampleText}" Margin="10,0,10,0"></TextBox>
+            <Button 
+             Command="{Binding AddTaskCommand}" 
+             CommandParameter="{Binding}">
+                Add
+            </Button>
+        </StackPanel>
+        <DataGrid ItemsSource="{Binding Tasks}">
+        </DataGrid>
+
+    </StackPanel>
+</Window>

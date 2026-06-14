@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PICalculatorDotNet8.Utility
+{
+    class PiCalculator
+    {
+        static Random random = new Random(Guid.NewGuid().GetHashCode());
+        public static double Calculate(long sample)
+        {
+            int sum = 0;
+            for (int i = 0; i < sample; i++)
+            {
+                if (Math.Pow(random.NextDouble(), 2) + Math.Pow(random.NextDouble(), 2) < 1)
+                {
+                    sum++;
+                }
+            }
+            return 4.0 * sum / (sample);
+        }
+    }
+}

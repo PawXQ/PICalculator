@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PICalculator.Models
+namespace PICalculatorDotNet8.Models
 {
-    internal class PiTaskDTO : INotifyPropertyChanged
+    class PiTaskDTO : INotifyPropertyChanged
     {
         private long _sample;
         public long Sample

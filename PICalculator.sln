@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PICalculator", "PICalculator\PICalculator.csproj", "{48653F3E-0D35-4621-BF04-4655E32D9096}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PICalculatorDotNet8", "PICalculatorDotNet8\PICalculatorDotNet8.csproj", "{7C3F5422-01D2-49D6-9367-D5B1FA916623}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{48653F3E-0D35-4621-BF04-4655E32D9096}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48653F3E-0D35-4621-BF04-4655E32D9096}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48653F3E-0D35-4621-BF04-4655E32D9096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C3F5422-01D2-49D6-9367-D5B1FA916623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C3F5422-01D2-49D6-9367-D5B1FA916623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C3F5422-01D2-49D6-9367-D5B1FA916623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C3F5422-01D2-49D6-9367-D5B1FA916623}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
