@@ -33,7 +33,7 @@ namespace PICalculatorDotNet8
 
             this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
 
-            this.FetchCompletedMissionTimer = new System.Threading.Timer(FetchCompletedMission, null, 0, 5000);
+            this.FetchCompletedMissionTimer = new System.Threading.Timer(FetchCompletedMission, null, 0, 3000);
         }
 
         public void RenderTask(List<PiTaskDTO> tasks)

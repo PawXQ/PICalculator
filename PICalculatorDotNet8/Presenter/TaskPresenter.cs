@@ -20,7 +20,6 @@ namespace PICalculatorDotNet8.Presenter
         private ConcurrentBag<PiTask> piTasks = new ConcurrentBag<PiTask>();
         private ConcurrentBag<PiTaskDTO> piTaskDTOs = new ConcurrentBag<PiTaskDTO>();
 
-        Stopwatch sw = new Stopwatch();
         public TaskPresenter(ITaskView tasksView)
         {
             this.tasksView = tasksView;
@@ -70,10 +69,12 @@ namespace PICalculatorDotNet8.Presenter
                     if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
                     else { continue; }
 
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
+                        Stopwatch sw = new Stopwatch();
+
                         sw.Start();
-                        double piResult = PiCalculator.Calculate(PiTaskSample);
+                        double piResult = await PiCalculator.Calculate(PiTaskSample);
                         sw.Stop();
                         double swTotal = sw.ElapsedMilliseconds;
 

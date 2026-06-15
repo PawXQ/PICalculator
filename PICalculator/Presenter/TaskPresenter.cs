@@ -20,7 +20,6 @@ namespace PICalculator.Presenter
         private ConcurrentBag<PiTask> piTasks = new ConcurrentBag<PiTask>();
         private ConcurrentBag<PiTaskDTO> piTaskDTOs = new ConcurrentBag<PiTaskDTO>();
 
-        Stopwatch sw = new Stopwatch();
         public TaskPresenter(ITaskView tasksView)
         {
             this.tasksView = tasksView;
@@ -72,6 +71,8 @@ namespace PICalculator.Presenter
 
                     Task.Run(() =>
                     {
+                        Stopwatch sw = new Stopwatch();
+
                         sw.Start();
                         double piResult = PiCalculator.Calculate(PiTaskSample);
                         sw.Stop();
