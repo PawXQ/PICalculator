@@ -16,8 +16,14 @@
             <TextBox Width="80" Text="{Binding SampleText}" Margin="10,0,10,0"></TextBox>
             <Button 
              Command="{Binding AddTaskCommand}" 
-             CommandParameter="{Binding}">
-                Add
+             CommandParameter="{Binding}"
+             Content="{Binding ViewState.AddText}">
+            </Button>
+            <Button 
+             Margin="10,0,0,0"
+             Command="{Binding CurrentOperateCommand}" 
+             CommandParameter="{Binding}"
+             Content="{Binding ViewState.OperateStateText}">
             </Button>
         </StackPanel>
         <DataGrid ItemsSource="{Binding Tasks}">
