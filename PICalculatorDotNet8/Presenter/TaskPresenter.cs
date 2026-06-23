@@ -22,6 +22,8 @@ namespace PICalculatorDotNet8.Presenter
 
         private SemaphoreSlim startMissionSemaphoreSlim = new SemaphoreSlim(0);
 
+        private CancellationTokenSource cts;
+
         public TaskPresenter(ITaskView tasksView)
         {
             this.tasksView = tasksView;
@@ -64,31 +66,53 @@ namespace PICalculatorDotNet8.Presenter
 
         public void StartMission()
         {
-            Task.Run(() =>
+            if (cts != null && !cts.IsCancellationRequested)
             {
-                while (true)
+                return;
+            }
+
+            cts = new CancellationTokenSource();
+            Debug.WriteLine("任務處理執行緒已開始");
+
+            Task.Run(async () =>
+            {
+                try
                 {
-                    startMissionSemaphoreSlim.Wait();
-
-                    long PiTaskSample = 0;
-
-                    if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
-                    else { continue; }
-
-                    Task.Run(async () =>
+                    while (true)
                     {
-                        Stopwatch sw = new Stopwatch();
+                        startMissionSemaphoreSlim.Wait(cts.Token);
 
-                        sw.Start();
-                        double piResult = await PiCalculator.Calculate(PiTaskSample);
-                        sw.Stop();
-                        double swTotal = sw.ElapsedMilliseconds;
+                        //if (cts.Token.IsCancellationRequested)
+                        //{
+                        //    return;
+                        //}
 
-                        PiTask task = new PiTask(PiTaskSample, swTotal.ToString(), piResult);
-                        piTasks.Add(task);
+                        long PiTaskSample = 0;
 
-                        CompleteTask(task);
-                    });
+                        if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
+                        else { continue; }
+
+                        await Task.Delay(2000, cts.Token);
+
+                        _ = Task.Run(async () =>
+                        {
+                            Stopwatch sw = new Stopwatch();
+
+                            sw.Start();
+                            double piResult = await PiCalculator.Calculate(PiTaskSample);
+                            sw.Stop();
+                            double swTotal = sw.ElapsedMilliseconds;
+
+                            PiTask task = new PiTask(PiTaskSample, swTotal.ToString(), piResult);
+                            piTasks.Add(task);
+
+                            CompleteTask(task);
+                        });
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    Debug.WriteLine("任務處理執行緒已安全停止。");
                 }
             });
         }
@@ -112,6 +136,7 @@ namespace PICalculatorDotNet8.Presenter
 
         public void StopMission()
         {
+            cts.Cancel();
         }
     }
 }
