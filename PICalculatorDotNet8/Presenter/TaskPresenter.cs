@@ -92,7 +92,7 @@ namespace PICalculatorDotNet8.Presenter
                         if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
                         else { continue; }
 
-                        await Task.Delay(2000, cts.Token);
+                        //await Task.Delay(2000, cts.Token);
 
                         _ = Task.Run(async () =>
                         {

@@ -54,12 +54,6 @@ namespace PICalculatorDotNet8
 
             this.AddTaskCommand = new RelayCommand(AddTask, AddTaskCanExcute);
 
-            this.CurrentOperateCommand = new RelayCommand(() =>
-            {
-                StopMission();
-                ViewState.ChangeOperateStatus();
-            }, () => true);
-
             this.StartMissionCommand = new RelayCommand(() =>
             {
                 StartMission();
@@ -73,9 +67,6 @@ namespace PICalculatorDotNet8
             }, () => true);
 
             this.CurrentOperateCommand = this.StopMissionCommand;
-
-            //this.StartMissionCommand = new RelayCommand(StartMission, () => true);
-            //this.StopMissionCommand = new RelayCommand(StopMission, () => true);
 
             this.FetchCompletedMissionTimer = new System.Threading.Timer(FetchCompletedMission, null, 0, 3000);
         }
