@@ -12,22 +12,41 @@
             <Label Width="100" HorizontalContentAlignment ="Center">PI Calculator</Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <Label Width="75" >Sample Size</Label>
-            <TextBox Width="80" Text="{Binding SampleText}" Margin="10,0,10,0"></TextBox>
+            <Label Width="75">Sample Size</Label>
+            <TextBox Width="80" Text="{Binding SampleText}" Margin="10,0,10,0"/>
             <Button 
              Command="{Binding AddTaskCommand}" 
              CommandParameter="{Binding}"
-             Content="{Binding ViewState.AddText}">
-            </Button>
+             Content="{Binding ViewState.AddText}"
+             MinWidth="20"/>
+
             <Button 
              Margin="10,0,0,0"
              Command="{Binding CurrentOperateCommand}" 
              CommandParameter="{Binding}"
-             Content="{Binding ViewState.OperateStateText}">
-            </Button>
+             Content="{Binding ViewState.OperateStateText}"
+             MinWidth="20"/>
         </StackPanel>
-        <DataGrid ItemsSource="{Binding Tasks}">
-        </DataGrid>
 
+        <ListView ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent">
+            <ListView.Style>
+                <Style TargetType="ListView">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Sample" DisplayMemberBinding="{Binding Sample}" Width="100" />
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}" Width="150" />
+                    <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" Width="120" />
+                </GridView>
+            </ListView.View>
+        </ListView>
     </StackPanel>
 </Window>

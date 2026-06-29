@@ -82,11 +82,6 @@ namespace PICalculatorDotNet8.Presenter
                     {
                         startMissionSemaphoreSlim.Wait(cts.Token);
 
-                        //if (cts.Token.IsCancellationRequested)
-                        //{
-                        //    return;
-                        //}
-
                         long PiTaskSample = 0;
 
                         if (this.PiTaskSampleQueue.TryDequeue(out long result)) { PiTaskSample = result; }
