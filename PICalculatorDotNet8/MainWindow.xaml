@@ -45,6 +45,17 @@
                     <GridViewColumn Header="Sample" DisplayMemberBinding="{Binding Sample}" Width="100" />
                     <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}" Width="150" />
                     <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" Width="120" />
+
+                    <GridViewColumn Header="Action" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button 
+                        Content="✕ Stop"
+                        Command="{Binding DataContext.StopPITaskCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
