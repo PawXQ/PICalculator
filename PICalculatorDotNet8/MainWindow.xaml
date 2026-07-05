@@ -5,59 +5,210 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PICalculatorDotNet8"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="PI Calculator" Height="600" Width="900"
+        Background="#F4F1E1" Loaded="Window_Loaded">
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center"  VerticalAlignment="Center">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Label Width="100" HorizontalContentAlignment ="Center">PI Calculator</Label>
+    <Window.Resources>
+        <FontFamily x:Key="InkFont">Microsoft JhengHei, 標楷體, PMingLiU, serif</FontFamily>
+
+        <Style x:Key="InkTextBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource InkFont}"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#2C2C2A"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1.5"/>
+            <Setter Property="BorderBrush" Value="#4A4A45"/>
+            <Setter Property="Padding" Value="2,5,2,3"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" Value="#1A1A1A"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter Property="BorderBrush" Value="#8B2500"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="InkButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource InkFont}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#333330"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#555550"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="InkBorder" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="InkBorder" Property="Background" Value="#2A2A28"/>
+                                <Setter TargetName="InkBorder" Property="BorderBrush" Value="#2A2A28"/>
+                                <Setter Property="Foreground" Value="#F4F1E1"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="InkBorder" Property="Background" Value="#1A1A19"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StopInkButton" TargetType="Button" BasedOn="{StaticResource InkButton}">
+            <Setter Property="Foreground" Value="#8B2500"/>
+            <Setter Property="BorderBrush" Value="#8B2500"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="InkBorder" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="InkBorder" Property="Background" Value="#8B2500"/>
+                                <Setter TargetName="InkBorder" Property="BorderBrush" Value="#8B2500"/>
+                                <Setter Property="Foreground" Value="#F4F1E1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource InkButton}">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Foreground" Value="#333330"/>
+            <Setter Property="FontFamily" Value="Microsoft JhengHei, 標楷體, serif"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="{TemplateBinding Background}" Padding="5,4">
+                            <GridViewRowPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#555550"/>
+            <Setter Property="FontFamily" Value="Microsoft JhengHei, 標楷體, serif"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#30000000"/>
+            <Setter Property="Padding" Value="5,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Image x:Name="InkBackground" Stretch="Fill" MouseMove="InkBackground_MouseMove" />
+
+        <Rectangle Fill="#11000000" IsHitTestVisible="False">
+            <Rectangle.CacheMode>
+                <BitmapCache/>
+            </Rectangle.CacheMode>
+        </Rectangle>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Background="#A6F4F1E1" CornerRadius="2" Padding="40,35" 
+                    BorderBrush="#15000000" BorderThickness="1"
+                    Width="650">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" Color="#332211" Opacity="0.05" ShadowDepth="3"/>
+                </Border.Effect>
+
+                <StackPanel>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,30">
+                        <TextBlock Text="PI Calculator" FontSize="26" FontWeight="Normal" 
+                                   FontFamily="{StaticResource InkFont}" Foreground="#222220" HorizontalAlignment="Center"/>
+                        <Rectangle Width="60" Height="1" Fill="#444440" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <Label Content="Sample Size" FontFamily="{StaticResource InkFont}" FontSize="15" 
+                               Foreground="#555550" VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                        <TextBox Width="130" Text="{Binding SampleText}" Style="{StaticResource InkTextBox}" Margin="0,0,20,0"/>
+
+                        <Button Command="{Binding AddTaskCommand}" 
+                                CommandParameter="{Binding}"
+                                Content="{Binding ViewState.AddText}"
+                                Style="{StaticResource InkButton}" Margin="0,0,12,0"/>
+
+                        <Button Command="{Binding CurrentOperateCommand}" 
+                                CommandParameter="{Binding}"
+                                Content="{Binding ViewState.OperateStateText}"
+                                Style="{StaticResource InkButton}"/>
+                    </StackPanel>
+
+                    <ListView ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent" MaxHeight="220" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView.Style>
+                            <Style TargetType="ListView">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <Trigger Property="HasItems" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Style>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Sample" DisplayMemberBinding="{Binding Sample}" Width="140" />
+                                <GridViewColumn Header="Time (s)" DisplayMemberBinding="{Binding Time}" Width="100" />
+                                <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" Width="180" />
+                                <GridViewColumn Header="Action" Width="110">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="✕ Stop"
+                                                    Command="{Binding StopTaskCommand}"
+                                                    CommandParameter="{Binding}" 
+                                                    Style="{StaticResource StopInkButton}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Border>
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Label Width="75">Sample Size</Label>
-            <TextBox Width="80" Text="{Binding SampleText}" Margin="10,0,10,0"/>
-            <Button 
-             Command="{Binding AddTaskCommand}" 
-             CommandParameter="{Binding}"
-             Content="{Binding ViewState.AddText}"
-             MinWidth="20"/>
-
-            <Button 
-             Margin="10,0,0,0"
-             Command="{Binding CurrentOperateCommand}" 
-             CommandParameter="{Binding}"
-             Content="{Binding ViewState.OperateStateText}"
-             MinWidth="20"/>
-        </StackPanel>
-
-        <ListView ItemsSource="{Binding Tasks}" BorderThickness="0" Background="Transparent">
-            <ListView.Style>
-                <Style TargetType="ListView">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <Trigger Property="HasItems" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.Style>
-
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Sample" DisplayMemberBinding="{Binding Sample}" Width="100" />
-                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}" Width="150" />
-                    <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" Width="120" />
-
-                    <GridViewColumn Header="Action" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button 
-                        Content="✕ Stop"
-                        Command="{Binding StopTaskCommand}"
-                        CommandParameter="{Binding}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </StackPanel>
+    </Grid>
 </Window>
