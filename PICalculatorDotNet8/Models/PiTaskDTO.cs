@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PICalculatorDotNet8.Models
 {
@@ -42,6 +43,17 @@ namespace PICalculatorDotNet8.Models
             }
         }
 
+        private ICommand _stopTaskCommand;
+        public ICommand StopTaskCommand
+        {
+            get { return _stopTaskCommand; }
+            set
+            {
+                _stopTaskCommand = value;
+                OnPropertyChanged(nameof(StopTaskCommand));
+            }
+        }
+
         public PiTaskDTO(PiTask piTask)
         {
             this.Sample = piTask.Sample;
@@ -49,9 +61,10 @@ namespace PICalculatorDotNet8.Models
             this.Value = piTask.Value;
         }
 
-        public PiTaskDTO(long Sample)
+        public PiTaskDTO(long Sample, ICommand command)
         {
             this.Sample = Sample;
+            this.StopTaskCommand = command;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -29,6 +29,8 @@ namespace PICalculatorDotNet8
             set { _currentOperateCommand = value; OnPropertyChanged(nameof(CurrentOperateCommand)); }
         }
 
+        private ICommand StopPITaskCommand { get; set; }
+
         public ObservableCollection<PiTaskDTO> Tasks { get; set; } = new ObservableCollection<PiTaskDTO>();
         public Dictionary<long, PiTaskDTO> piTasksDict = new Dictionary<long, PiTaskDTO>();
         public string _sampleText = "0";

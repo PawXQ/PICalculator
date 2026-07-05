@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using static PICalculatorDotNet8.Contract.TaskContract;
 
 namespace PICalculatorDotNet8.Presenter
@@ -40,7 +41,13 @@ namespace PICalculatorDotNet8.Presenter
                 {
                     this.PiTaskSampleQueue.Enqueue(sample);
 
-                    PiTaskDTO piTaskDTO = new PiTaskDTO(sample);
+                    CancellationTokenSource calculateCts = this.PiTasksStatus[sample].CancellationTokenSource;
+                    ICommand StopTaskCommand = new RelayCommand(() =>
+                    {
+                        StopPiTask(calculateCts);
+                    }, () => true);
+
+                    PiTaskDTO piTaskDTO = new PiTaskDTO(sample, StopTaskCommand);
                     this.tasksView.OnAddedRenderTask(piTaskDTO);
 
                     startMissionSemaphoreSlim.Release();
@@ -55,7 +62,12 @@ namespace PICalculatorDotNet8.Presenter
                 Console.WriteLine($"{sample} sample duplicate");
                 return false;
             }
-            this.PiTasksStatus[sample] = null;
+
+            CancellationTokenSource calculateCts = new CancellationTokenSource();
+
+            PiTask piTask = new PiTask(sample, calculateCts);
+
+            this.PiTasksStatus[sample] = piTask;
             return true;
         }
 
@@ -94,11 +106,14 @@ namespace PICalculatorDotNet8.Presenter
                             Stopwatch sw = new Stopwatch();
 
                             sw.Start();
-                            double piResult = await PiCalculator.Calculate(PiTaskSample);
+                            double piResult = await PiCalculator.Calculate(PiTaskSample, this.PiTasksStatus[PiTaskSample].CancellationTokenSource.Token);
                             sw.Stop();
                             double swTotal = sw.ElapsedMilliseconds;
 
-                            PiTask task = new PiTask(PiTaskSample, swTotal.ToString(), piResult);
+                            this.PiTasksStatus[PiTaskSample].Time = swTotal.ToString();
+                            this.PiTasksStatus[PiTaskSample].Value = piResult;
+
+                            PiTask task = this.PiTasksStatus[PiTaskSample];
                             piTasks.Add(task);
 
                             CompleteTask(task);
@@ -132,6 +147,12 @@ namespace PICalculatorDotNet8.Presenter
         public void StopMission()
         {
             cts.Cancel();
+        }
+
+        private void StopPiTask(CancellationTokenSource cancellationTokenSource)
+        {
+            Debug.WriteLine("Stop Task");
+            cancellationTokenSource.Cancel();
         }
     }
 }

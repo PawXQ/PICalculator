@@ -51,7 +51,7 @@
                             <DataTemplate>
                                 <Button 
                         Content="✕ Stop"
-                        Command="{Binding DataContext.StopPITaskCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Command="{Binding StopTaskCommand}"
                         CommandParameter="{Binding}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

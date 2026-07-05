@@ -11,11 +11,9 @@ namespace PICalculatorDotNet8.Utility
     {
         const int BATCH_QUANTITY = 2_500_000;
 
-        static object obj = new object();
-
         //static Random random = new Random(Guid.NewGuid().GetHashCode());
 
-        public static async Task<double> Calculate(long sample)
+        public static async Task<double> Calculate(long sample, CancellationToken token)
         {
             long BATCH = sample % BATCH_QUANTITY == 0 ? sample / BATCH_QUANTITY : sample / BATCH_QUANTITY + 1;
             long remainder = sample % BATCH_QUANTITY;
@@ -25,9 +23,11 @@ namespace PICalculatorDotNet8.Utility
 
             long sum = 0;
 
-            await Parallel.ForAsync(0, BATCH, (number, token) =>
+            await Parallel.ForAsync(0, BATCH, new ParallelOptions() { CancellationToken = token }, async (number, token) =>
             {
                 //int sum = 0;
+
+                await Task.Delay(3000, token);
 
                 long quantity = BATCH_QUANTITY;
                 if (number + 1 == BATCH && remainder != 0) quantity = remainder;
@@ -54,10 +54,11 @@ namespace PICalculatorDotNet8.Utility
                     }
                     //Debug.WriteLine($"number: {number}, subTotal: {subTotal}");
                 }
+
                 Interlocked.Add(ref sum, subTotal);
                 //sumArray[number] = sum;
 
-                return ValueTask.CompletedTask;
+                //return ValueTask.CompletedTask;
             });
 
             //for (int i = 0; i < sumArray.Length; i++) totalSum += sumArray[i];
